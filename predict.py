@@ -97,6 +97,9 @@ regression_line,r_squared = apply_linear_regression(x,y)
 
 print('r squared = ',r_squared)
 
+print('Current FutureExpect FuturePredict')
+for i in range(len(regression_line)):
+  print('{} {} {}'.format(x[i],y[i],regression_line[i]))
 
 
 plt.scatter(np.array(df['label'][:-20]),x)

@@ -21,6 +21,9 @@ df['next3'] = df['Adj. Close'].shift(-3)
 df['next4'] = df['Adj. Close'].shift(-4)
 df['label'] = df['Adj. Close'].shift(-5)
 
+new_df = df[['Adj. Close','next1','next2','next3','next4','label']]
+new_df.to_csv('processed.csv')
+
 df.dropna(inplace=True)
 test_part = int(len(df)*0.02)
 
@@ -34,15 +37,14 @@ test_y = output[-test_part:]
 
 #    for x in train_y:
 #        print(x)
-
-
-n_nodes_hl1 = 350
-n_nodes_hl2 = 350
+  
+n_nodes_hl1 = 10
+n_nodes_hl2 = 10
 #n_nodes_hl3 = 1500
 
 n_classes = 1
 batch_size = 100
-hm_epochs = 30
+hm_epochs = 40
 
 
 X = tf.placeholder(tf.float32, [None, len(train_x[0])])
@@ -61,7 +63,7 @@ y = (tf.matmul(h2, W3) + b3)
 Y = tf.placeholder(tf.float32, [None,n_classes])
 
 cost = tf.reduce_mean(tf.squared_difference(y,Y))
-optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
+optimizer = tf.train.AdamOptimizer(0.01).minimize(cost)
 init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
@@ -94,7 +96,7 @@ with tf.Session() as sess:
     print(test_y)
     print("Predicted Output")
     predicted_output = sess.run(y,feed_dict={X: input,Y: output})
-#    print(sess.run(y, feed_dict={X: test_x, Y: test_y}))
+    print(sess.run(y, feed_dict={X: test_x, Y: test_y}))
     print("Error")
     print(sess.run(cost, feed_dict={X: test_x, Y: test_y}))
 
